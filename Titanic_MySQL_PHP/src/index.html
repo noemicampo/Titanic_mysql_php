@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Titanic Statistics</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+		<script	src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" >
+	</head>
+
+	<body>
+		<div class="container">
+			<h2 class="text-center mt-4 mb-3">Titanic Statistics</a></h2>
+			<div class="card-group mt-5">
+				<div class="card text-center">
+					<h4 class="card-header">Survivors</h4>
+					<div class="card-body">
+						<div class="chart-container">
+							<canvas id="pie_chart"></canvas>
+						</div>
+					</div>
+				</div>
+				<div class="card text-center">
+					<h4 class="card-header">Not Survivors</h4>
+					<div class="card-body">
+						<div class="chart-container">
+							<canvas id="bar_chart"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card text-center mt-5">
+				<h4 class="card-header">Options</h4>
+				<div class="card-body">
+					<h6 class="card-text">Select the option for visualizing charts</h6>
+					<div class="form-group">
+						<button type="button" name="submit_data_gender" class="btn btn-secondary" id="submit_data_gender" value="Sex">Gender</button>
+						<button type="button" name="submit_data_pclass" class="btn btn-secondary" id="submit_data_pclass" value="Pclass">Pclass</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+
+<script>
+	
+$(document).ready(function(){
+
+	$('#submit_data_gender').click(function makechart_Sex()
+	{
+		$.ajax({
+			url:"data.php",
+			method:"POST",
+			data:{action:'fetch_sex'},
+			dataType:"JSON",
+			success:function(data)
+			{
+				var total = [];
+
+				for(var count = 0; count < data.length; count++)
+				{
+					total.push(data[count].total);
+				}
+
+				var chart_data = {
+					labels:['Women', 'Men'],
+					datasets:[
+						{
+							label:'Gender',
+							backgroundColor: ['hotpink', 'lightseagreen'],
+							color:'#fff',
+							data:total
+						}
+					]
+				};
+
+				var group_chart1 = $('#pie_chart');
+
+				var chart1 = new Chart(group_chart1, {
+					type:"pie",
+					data:chart_data,
+				});
+			}
+		})
+	})
+
+	$('#submit_data_pclass').click(function makechart_Pclass()
+	{
+		$.ajax({
+			url:"data.php",
+			method:"POST",
+			data:{action:'fetch_pclass'},
+			dataType:"JSON",
+			success:function(data)
+			{
+				var total = [];
+
+				for(var count = 0; count < data.length; count++)
+				{
+					total.push(data[count].total);
+				}
+
+				var chart_data = {
+					labels:['First','Second','Third'],
+					datasets:[
+						{
+							label:'PClass',
+							backgroundColor:['darkgoldenrod	', 'teal', 'darkslateblue'],
+							color:'#fff',
+							data:total
+						}
+					]
+				};
+
+				var group_chart2 = $('#bar_chart');
+
+				var chart2 = new Chart(group_chart2, {
+					type:'bar',
+					data:chart_data,
+				});
+			}
+		})
+	})
+});
+
+</script>
